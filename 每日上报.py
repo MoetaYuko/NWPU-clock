@@ -34,20 +34,17 @@ for i in range(5):
 if not success:
     raise Exception('登录多次失败，可能学工系统已更新')
 
-
-def have_submitted():
-    state = driver.find_element(By.ID, 'rbxx_div').find_element(
-        By.CLASS_NAME, 'page__top2').find_element(By.TAG_NAME, 'i').text
-    return '您已提交今日填报' in state
-
-
 success = False
 print('正在上报')
 for i in range(5):
     try:
         driver.get('https://yqtb.nwpu.edu.cn/wx/xg/yz-mobile/index.jsp')
         driver.get('https://yqtb.nwpu.edu.cn/wx/ry/jrsb_js.jsp')
-        if have_submitted():
+
+        state = driver.find_element(By.ID, 'rbxx_div').find_element(
+            By.CLASS_NAME, 'page__top2').text
+        print(state)
+        if '您已提交今日填报' in state:
             success = True
             break
 
