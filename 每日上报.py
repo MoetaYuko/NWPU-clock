@@ -15,11 +15,24 @@ option.add_experimental_option('prefs', {'intl.accept_languages': 'zh-CN'})
 driver = webdriver.Chrome(
     service=Service(executable_path='/usr/bin/chromedriver'), options=option)
 
-print('正在上报')
-driver.get('https://yqtb.nwpu.edu.cn/wx/xg/yz-mobile/index.jsp')
-driver.find_element(By.ID, 'username').send_keys(USERNAME)
-driver.find_element(By.ID, 'password').send_keys(PASSWORD)
-driver.find_element(By.ID, 'fm1').find_element(By.NAME, 'submit').click()
+success = False
+print('正在登录')
+for i in range(5):
+    try:
+        driver.get('https://uis.nwpu.edu.cn/cas/login')
+        driver.find_element(By.ID, 'username').send_keys(USERNAME)
+        driver.find_element(By.ID, 'password').send_keys(PASSWORD)
+        driver.find_element(By.ID, 'fm1').find_element(By.NAME,
+                                                       'submit').click()
+        if driver.get_cookie('TGC') is not None:
+            success = True
+            break
+    except:
+        traceback.print_exc()
+        print(f'登录失败{i + 1}次，正在重试...')
+
+if not success:
+    raise Exception('登录多次失败，可能学工系统已更新')
 
 
 def have_submitted():
@@ -29,8 +42,10 @@ def have_submitted():
 
 
 success = False
+print('正在上报')
 for i in range(5):
     try:
+        driver.get('https://yqtb.nwpu.edu.cn/wx/xg/yz-mobile/index.jsp')
         driver.get('https://yqtb.nwpu.edu.cn/wx/ry/jrsb_js.jsp')
         if have_submitted():
             success = True
@@ -47,7 +62,7 @@ for i in range(5):
         driver.find_element(By.ID, 'save_div').click()
     except:
         traceback.print_exc()
-        print('失败' + str(i + 1) + '次，正在重试...')
+        print(f'失败{i + 1}次，正在重试...')
 driver.quit()
 if success:
     print('上报完成')
