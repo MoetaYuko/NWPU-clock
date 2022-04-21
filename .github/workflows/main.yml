@@ -3,7 +3,7 @@ name: '每日上报'
 on:
   push:
   schedule:
-    - cron: '12,43 1-8 * * *'
+    - cron: '12,43 0-8 * * *'
   workflow_dispatch:
 
 jobs:
