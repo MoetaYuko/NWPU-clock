@@ -38,7 +38,6 @@ success = False
 print('正在上报')
 for i in range(5):
     try:
-        driver.get('https://yqtb.nwpu.edu.cn/wx/xg/yz-mobile/index.jsp')
         driver.get('https://yqtb.nwpu.edu.cn/wx/ry/jrsb_js.jsp')
 
         state = driver.find_element(By.ID, 'rbxx_div').find_element(
