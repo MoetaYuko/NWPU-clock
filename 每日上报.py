@@ -52,9 +52,7 @@ for i in range(5):
                                                          'a').click()
         confirm_cb = driver.find_element(By.ID, 'brcn')
         if not confirm_cb.is_selected():
-            confirm_cb.find_element(By.XPATH,
-                                    './..').find_element(By.TAG_NAME,
-                                                         'i').click()
+            confirm_cb.find_element(By.XPATH, './../..').click()
         driver.find_element(By.ID, 'save_div').click()
     except:
         traceback.print_exc()
