@@ -4,6 +4,7 @@ import traceback
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 
 print('初始化浏览器')
 USERNAME = os.environ['ID']
@@ -15,7 +16,15 @@ option.add_experimental_option('prefs', {'intl.accept_languages': 'zh-CN'})
 driver = webdriver.Chrome(
     service=Service(executable_path='/usr/bin/chromedriver'), options=option)
 
-success = False
+
+def cookie_contains(key):
+
+    def _predicate(driver):
+        return driver.get_cookie(key) is not None
+
+    return _predicate
+
+
 print('正在登录')
 for i in range(5):
     try:
@@ -23,18 +32,16 @@ for i in range(5):
         driver.find_element(By.ID, 'username').send_keys(USERNAME)
         driver.find_element(By.ID, 'password').send_keys(PASSWORD)
         driver.find_element(By.ID, 'fm1').find_element(By.NAME,
-                                                       'submit').click()
-        if driver.get_cookie('TGC') is not None:
-            success = True
-            break
+                                                       'button').click()
+        WebDriverWait(driver, 10).until(cookie_contains('TGC'))
+        break
     except:
         traceback.print_exc()
         print(f'登录失败{i + 1}次，正在重试...')
-
-if not success:
+else:
+    driver.quit()
     raise Exception('登录多次失败，可能学工系统已更新')
 
-success = False
 print('正在上报')
 for i in range(5):
     try:
@@ -44,7 +51,8 @@ for i in range(5):
             By.CLASS_NAME, 'page__top2').text
         print(state)
         if '您已提交今日填报' in state:
-            success = True
+            print('上报完成')
+            driver.quit()
             break
 
         driver.find_element(By.ID, 'rbxx_div').find_element(
@@ -57,8 +65,6 @@ for i in range(5):
     except:
         traceback.print_exc()
         print(f'失败{i + 1}次，正在重试...')
-driver.quit()
-if success:
-    print('上报完成')
 else:
+    driver.quit()
     raise Exception('上报多次失败，可能学工系统已更新')
