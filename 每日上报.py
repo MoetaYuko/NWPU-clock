@@ -29,6 +29,10 @@ print('正在登录')
 for i in range(5):
     try:
         driver.get('https://uis.nwpu.edu.cn/cas/login')
+        driver.find_element(By.CLASS_NAME,
+                            'sw-login-main-content').find_element(
+                                By.XPATH, '//li[text()="密码登录"]').click()
+
         driver.find_element(By.ID, 'username').send_keys(USERNAME)
         driver.find_element(By.ID, 'password').send_keys(PASSWORD)
         driver.find_element(By.ID, 'fm1').find_element(By.NAME,
