@@ -2,6 +2,7 @@ import os
 import traceback
 
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -29,9 +30,18 @@ print('正在登录')
 for i in range(5):
     try:
         driver.get('https://uis.nwpu.edu.cn/cas/login')
-        driver.find_element(By.CLASS_NAME,
-                            'sw-login-main-content').find_element(
-                                By.XPATH, '//li[text()="密码登录"]').click()
+        login_form = driver.find_element(By.CLASS_NAME,
+                                         'sw-login-main-content')
+        err = None
+        for text in ['密码登录', 'User-Password']:
+            try:
+                login_form.find_element(By.XPATH,
+                                        f'//li[text()="{text}"]').click()
+                break
+            except NoSuchElementException as e:
+                err = e
+        else:
+            raise err
 
         driver.find_element(By.ID, 'username').send_keys(USERNAME)
         driver.find_element(By.ID, 'password').send_keys(PASSWORD)
