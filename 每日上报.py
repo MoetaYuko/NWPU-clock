@@ -14,8 +14,7 @@ PASSWORD = os.environ['PASSWORD']
 option = webdriver.ChromeOptions()
 option.headless = True
 option.add_experimental_option('prefs', {'intl.accept_languages': 'zh-CN'})
-driver = webdriver.Chrome(
-    service=Service(executable_path='/usr/bin/chromedriver'), options=option)
+driver = webdriver.Chrome(options=option)
 
 
 def cookie_contains(key):
