@@ -12,7 +12,7 @@ USERNAME = os.environ['ID']
 PASSWORD = os.environ['PASSWORD']
 
 option = webdriver.ChromeOptions()
-option.headless = True
+option.add_argument('--headless')
 option.add_experimental_option('prefs', {'intl.accept_languages': 'zh-CN'})
 driver = webdriver.Chrome(options=option)
 
